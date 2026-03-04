@@ -29,7 +29,7 @@ class Game:
         
         self.coin_list = []
 
-        self.scene = "start" # sets the starting scene
+        self.scene = "start_screen" # sets the starting scene
 
         self.setup_map_sprites()
 
@@ -40,14 +40,15 @@ class Game:
 
         for y in range(pyxel.tilemaps[0].height):
             for x in range(pyxel.tilemaps[0].width):
-                tile = helpers.get_tile(x, y)
+
+                tile = pyxel.tilemaps[0].pget(x, y)
 
                 if tile == helpers.PLAYER_TILE:
                     self.player.set_pos(x * 8, y * 8)   
 
-                    for yi in range(y, y + (self.player.height // 8)):
-                        for xi in range(x, x + (self.player.width // 8)):
-                            pyxel.tilemaps[0].pset(xi, yi, helpers.TRANSPARENT_TILE)
+                    for tileY in range(y, y + (self.player.height // 8)):
+                        for tileX in range(x, x + (self.player.width // 8)):
+                            pyxel.tilemaps[0].pset(tileX, tileY, helpers.TRANSPARENT_TILE)
  
                 if tile == helpers.COIN_TILE:
 
@@ -69,32 +70,45 @@ class Game:
 
         pyxel.cls(0)    # clears screen
 
-        if self.scene == "start":
+        if self.scene == "start_screen":
             self.draw_start_screen()
 
-        elif self.scene == "play":
+        elif self.scene == "play_game":
             self.draw_play()
+
+    def draw_map(self, mapX, mapY):
+        """Handles how the map is drawn"""
+
+        pyxel.bltm(
+            x= mapX, 
+            y = mapY, 
+            tm = 0, 
+            u = 0 , 
+            v = 0, 
+            w = self.width, 
+            h = self.height, 
+            colkey=helpers.COLKEY)
     
     def draw_start_screen(self):
         '''Handles what is drawn on the start screen'''
 
-        pyxel.rect(0, 0, self.width, self.height, helpers.NAVY)
+        pyxel.rect(0, 0, self.width, self.height, helpers.BLACK)
+
 
         pyxel.text(
-            x = self.width//2, 
+            x = self.width//2 - 30, 
             y = self.height//3, 
             s = f"SIMPLE MAZE GAME", 
             col = helpers.WHITE)  
         
-        
         pyxel.text(
-            x = self.width//2,  
+            x = self.width//2 - 30,  
             y = self.height//2, 
             s = f"--press enter--", 
             col = helpers.WHITE)
 
         if pyxel.btnp(pyxel.KEY_RETURN):
-            self.scene = "play"
+            self.scene = "play_game"
 
     def draw_play(self):
         '''Handles what is drawn when the game is being played'''
@@ -102,30 +116,20 @@ class Game:
         # draw background color
         pyxel.rect(x=0, y=0, w=self.width, h=self.height, col=helpers.NAVY)
     
-        # draw map
-        pyxel.bltm(
-            x= 0, 
-            y = 0, 
-            tm = 0, 
-            u = 0 , 
-            v = 0, 
-            w = self.width, 
-            h = self.height, 
-            colkey=helpers.COLKEY)
+        self.draw_map(8, 0)
 
         self.player.draw()
 
         for coin in self.coin_list:
-            if coin.is_active() == True:
-                coin.draw()
+            coin.draw()
 
     def update(self):
         '''Called every frame of the game'''
   
-        self.player.update()
+        self.player.movement()
 
         for coin in self.coin_list:
-            if self.player.collides_with(coin) and coin.is_active():
+            if self.player.collides_with(coin) and coin.active == True:
                 coin.set_active(False)
 
 Game()
