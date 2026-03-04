@@ -52,10 +52,10 @@ class Player:
             self.posY += self.speed
 
         # prevent it from moving into wall tiles
-        if self.is_colliding(self.posX, self.posY, helpers.WALL_TILE):
+        if self.is_colliding(self.posX, self.posY, helpers.WALL_TILE_POSITIONS):
             self.set_pos(original_x,original_y)
 
-    def is_colliding(self, x, y, tile):
+    def is_colliding(self, x, y, tiles):
         '''Checks if Player is colliding with a specific tile'''
 
         # Calculate the tile range based on the sprite's width and height
@@ -64,10 +64,10 @@ class Player:
         x2 = pyxel.floor(x + self.width - 1) // 8
         y2 = pyxel.floor(y + self.height - 1) // 8
 
-        # Check for collisions within the tile range
+        # Check for collisions within the tiles range
         for tileY in range(y1, y2 + 1):
             for tileX in range(x1, x2 + 1):
-                if pyxel.tilemaps[0].pget(tileX, tileY) == tile:
+                if pyxel.tilemaps[0].pget(tileX, tileY) in tiles:
                     return True
 
         return False
