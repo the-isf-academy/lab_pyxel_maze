@@ -116,7 +116,7 @@ class Game:
         # draw background color
         pyxel.rect(x=0, y=0, w=self.width, h=self.height, col=helpers.NAVY)
     
-        self.draw_map(8, 0)
+        self.draw_map(0, 0)
 
         self.player.draw()
 
