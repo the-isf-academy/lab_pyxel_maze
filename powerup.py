@@ -1,7 +1,7 @@
 import pyxel
 import helpers
 
-class Coin:
+class Powerup:
     def __init__(self, img_bank, editX, editY, width, height, scale):
         self.img_bank = img_bank
         self.width = width
