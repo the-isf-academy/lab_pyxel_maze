@@ -45,8 +45,10 @@ class Game:
 
                 tile = pyxel.tilemaps[0].pget(x, y)
 
+                screen_y = (y - self.y_offset) * 8
+
                 if tile == helpers.PLAYER_TILE:
-                    self.player.set_pos(x * 8, y * 8)   
+                    self.player.set_pos(x * 8, screen_y)   
 
                     for tileY in range(y, y + (self.player.height // 8)):
                         for tileX in range(x, x + (self.player.width // 8)):
@@ -62,7 +64,7 @@ class Game:
                         height = 8,
                         scale = 0.5)
 
-                    coin.set_pos(x * 8, y * 8)              
+                    coin.set_pos(x * 8, screen_y)              
                     self.coin_list.append(coin)
                 
                     pyxel.tilemaps[0].pset(x, y, helpers.TRANSPARENT_TILE) 
@@ -120,7 +122,7 @@ class Game:
         # draw background color
         pyxel.rect(x=0, y=0, w=self.width, h=self.height, col=helpers.NAVY)
     
-        self.draw_map(0, 0)
+        self.draw_map(0, self.y_offset)
 
         self.player.draw()
 
